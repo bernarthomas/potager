@@ -9,3 +9,4 @@
 ###< symfony/framework-bundle ###
 /.idea/
 WIKI.md
+/src/Migrations/
