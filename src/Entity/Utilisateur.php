@@ -5,11 +5,13 @@ namespace App\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
 use \DateTimeInterface;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UtilisateurRepository")
+ * @UniqueEntity(fields={"email"}, message="There is already an account with this email")
  */
 class Utilisateur implements UserInterface
 {
@@ -19,6 +21,11 @@ class Utilisateur implements UserInterface
      * @ORM\Column(type="integer")
      */
     private $id;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $actif;
 
     /**
      * @ORM\Column(type="string", length=180, unique=true)
@@ -257,6 +264,26 @@ class Utilisateur implements UserInterface
                 $utilisateurModificateur->setUtilisateurDerniereMiseAJour(null);
             }
         }
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getActif()
+    {
+        return $this->actif;
+    }
+
+    /**
+     * @param mixed $actif
+     *
+     * @return Utilisateur
+     */
+    public function setActif($actif)
+    {
+        $this->actif = $actif;
 
         return $this;
     }
