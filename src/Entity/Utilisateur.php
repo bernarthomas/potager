@@ -10,6 +10,9 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use \DateTimeInterface;
 
 /**
+ * Class Utilisateur
+ * @package App\Entity
+ *
  * @ORM\Entity(repositoryClass="App\Repository\UtilisateurRepository")
  * @UniqueEntity(fields={"email"}, message="There is already an account with this email")
  */
@@ -28,22 +31,6 @@ class Utilisateur implements UserInterface
     private $actif;
 
     /**
-     * @ORM\Column(type="string", length=180, unique=true)
-     */
-    private $email;
-
-    /**
-     * @ORM\Column(type="json")
-     */
-    private $roles = [];
-
-    /**
-     * @var string The hashed password
-     * @ORM\Column(type="string")
-     */
-    private $password;
-
-    /**
      * @ORM\Column(type="datetime")
      */
     private $dateCreation;
@@ -52,6 +39,27 @@ class Utilisateur implements UserInterface
      * @ORM\Column(type="datetime", nullable=true)
      */
     private $dateDerniereMiseAJour;
+
+    /**
+     * @ORM\Column(type="string", length=180, unique=true)
+     */
+    private $email;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Historique", mappedBy="utilisateur")
+     */
+    private $historique;
+
+    /**
+     * @var string The hashed password
+     * @ORM\Column(type="string")
+     */
+    private $password;
+
+    /**
+     * @ORM\Column(type="json")
+     */
+    private $roles = [];
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Utilisateur", inversedBy="utilisateursCreateurs")
@@ -74,22 +82,37 @@ class Utilisateur implements UserInterface
      */
     private $utilisateursModificateurs;
 
+    /**
+     * Utilisateur constructor.
+     */
     public function __construct()
     {
         $this->utilisateursCreateurs = new ArrayCollection();
         $this->utilisateursModificateurs = new ArrayCollection();
+        $this->historique = new ArrayCollection();
     }
 
+    /**
+     * @return int|null
+     */
     public function getId(): ?int
     {
         return $this->id;
     }
 
+    /**
+     * @return string|null
+     */
     public function getEmail(): ?string
     {
         return $this->email;
     }
 
+    /**
+     * @param string $email
+     *
+     * @return $this
+     */
     public function setEmail(string $email): self
     {
         $this->email = $email;
@@ -119,6 +142,11 @@ class Utilisateur implements UserInterface
         return array_unique($roles);
     }
 
+    /**
+     * @param array $roles
+     *
+     * @return $this
+     */
     public function setRoles(array $roles): self
     {
         $this->roles = $roles;
@@ -134,6 +162,11 @@ class Utilisateur implements UserInterface
         return (string) $this->password;
     }
 
+    /**
+     * @param string $password
+     *
+     * @return $this
+     */
     public function setPassword(string $password): self
     {
         $this->password = $password;
@@ -158,11 +191,19 @@ class Utilisateur implements UserInterface
         // $this->plainPassword = null;
     }
 
+    /**
+     * @return DateTimeInterface|null
+     */
     public function getDateCreation(): ?DateTimeInterface
     {
         return $this->dateCreation;
     }
 
+    /**
+     * @param DateTimeInterface $dateCreation
+     *
+     * @return $this
+     */
     public function setDateCreation(DateTimeInterface $dateCreation): self
     {
         $this->dateCreation = $dateCreation;
@@ -170,11 +211,19 @@ class Utilisateur implements UserInterface
         return $this;
     }
 
+    /**
+     * @return DateTimeInterface|null
+     */
     public function getDateDerniereMiseAJour(): ?DateTimeInterface
     {
         return $this->dateDerniereMiseAJour;
     }
 
+    /**
+     * @param DateTimeInterface|null $dateDerniereMiseAJour
+     *
+     * @return $this
+     */
     public function setDateDerniereMiseAJour(?DateTimeInterface $dateDerniereMiseAJour): self
     {
         $this->dateDerniereMiseAJour = $dateDerniereMiseAJour;
@@ -182,11 +231,60 @@ class Utilisateur implements UserInterface
         return $this;
     }
 
+    /**
+     * @return Collection|Historique[]
+     */
+    public function getHistorique(): Collection
+    {
+        return $this->historique;
+    }
+
+    /**
+     * @param Historique $historique
+     *
+     * @return $this
+     */
+    public function addHistorique(Historique $historique): self
+    {
+        if (!$this->historique->contains($historique)) {
+            $this->historique[] = $historique;
+            $historique->setUtilisateur($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param Historique $historique
+     *
+     * @return $this
+     */
+    public function removeHistorique(Historique $historique): self
+    {
+        if ($this->historique->contains($historique)) {
+            $this->historique->removeElement($historique);
+            // set the owning side to null (unless already changed)
+            if ($historique->getUtilisateur() === $this) {
+                $historique->setUtilisateur(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return $this|null
+     */
     public function getUtilisateurCreation(): ?self
     {
         return $this->utilisateurCreation;
     }
 
+    /**
+     * @param Utilisateur|null $utilisateurCreation
+     *
+     * @return $this
+     */
     public function setUtilisateurCreation(?self $utilisateurCreation): self
     {
         $this->utilisateurCreation = $utilisateurCreation;
@@ -202,6 +300,11 @@ class Utilisateur implements UserInterface
         return $this->utilisateursCreateurs;
     }
 
+    /**
+     * @param Utilisateur $utilisateurCreateur
+     *
+     * @return $this
+     */
     public function addUtilisateursCreateurs(self $utilisateurCreateur): self
     {
         if (!$this->utilisateursCreateurs->contains($utilisateurCreateur)) {
@@ -212,6 +315,11 @@ class Utilisateur implements UserInterface
         return $this;
     }
 
+    /**
+     * @param Utilisateur $utilisateurCreateur
+     *
+     * @return $this
+     */
     public function removeUtilisateursCreateur(self $utilisateurCreateur): self
     {
         if ($this->utilisateursCreateurs->contains($utilisateurCreateur)) {
@@ -225,11 +333,19 @@ class Utilisateur implements UserInterface
         return $this;
     }
 
+    /**
+     * @return $this|null
+     */
     public function getUtilisateurDerniereMiseAJour(): ?self
     {
         return $this->utilisateurDerniereMiseAJour;
     }
 
+    /**
+     * @param Utilisateur|null $tilisateurDerniereMiseAJour
+     *
+     * @return $this
+     */
     public function setUtilisateurDerniereMiseAJour(?self $tilisateurDerniereMiseAJour): self
     {
         $this->utilisateurDerniereMiseAJour = $tilisateurDerniereMiseAJour;
@@ -245,6 +361,11 @@ class Utilisateur implements UserInterface
         return $this->utilisateursModificateurs;
     }
 
+    /**
+     * @param Utilisateur $utilisateurModificateur
+     *
+     * @return $this
+     */
     public function addUtilisateurModificateur(self $utilisateurModificateur): self
     {
         if (!$this->utilisateursModificateurs->contains($utilisateurModificateur)) {
@@ -255,6 +376,11 @@ class Utilisateur implements UserInterface
         return $this;
     }
 
+    /**
+     * @param Utilisateur $utilisateurModificateur
+     *
+     * @return $this
+     */
     public function removeUtilisateurModificateur(self $utilisateurModificateur): self
     {
         if ($this->utilisateursModificateurs->contains($utilisateurModificateur)) {

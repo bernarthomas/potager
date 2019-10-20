@@ -1,0 +1,183 @@
+<?php
+
+namespace App\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+use \DateTimeInterface;
+
+/**
+ * Class Historique
+ * @package App\Entity
+ * 
+ * @ORM\Entity(repositoryClass="App\Repository\HistoriqueRepository")
+ */
+class Historique
+{
+    /**
+     * @ORM\Id()
+     * @ORM\GeneratedValue()
+     * @ORM\Column(type="integer")
+     */
+    private $id;
+    
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Action", inversedBy="historique")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $action;
+    
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    private $date;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Entite", inversedBy="historique")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $entite;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $entite_id;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Utilisateur", inversedBy="historique")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $utilisateur;
+
+    /**
+     * @ORM\Column(type="array", nullable=true)
+     */
+    private $valeurs_modifiees = [];
+
+    /**
+     * @return int|null
+     */
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+    /**
+     * @return Action|null
+     */
+    public function getAction(): ?Action
+    {
+        return $this->action;
+    }
+
+    /**
+     * @param Action|null $action
+     * 
+     * @return $this
+     */
+    public function setAction(?Action $action): self
+    {
+        $this->action = $action;
+
+        return $this;
+    }
+
+    /**
+     * @return DateTimeInterface|null
+     */
+    public function getDate(): ?DateTimeInterface
+    {
+        return $this->date;
+    }
+
+    /**
+     * @param  $date
+     * 
+     * @return $this
+     */
+    public function setDate( $date): self
+    {
+        $this->date = $date;
+
+        return $this;
+    }
+
+    /**
+     * @return Entite|null
+     */
+    public function getEntite(): ?Entite
+    {
+        return $this->entite;
+    }
+
+    /**
+     * @param Entite|null $entite
+     * 
+     * @return $this
+     */
+    public function setEntite(?Entite $entite): self
+    {
+        $this->entite = $entite;
+
+        return $this;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getEntiteId(): ?int
+    {
+        return $this->entite_id;
+    }
+
+    /**
+     * @param int $entite_id
+     * 
+     * @return $this
+     */
+    public function setEntiteId(int $entite_id): self
+    {
+        $this->entite_id = $entite_id;
+
+        return $this;
+    }
+
+    /**
+     * @return Utilisateur|null
+     */
+    public function getUtilisateur(): ?Utilisateur
+    {
+        return $this->utilisateur;
+    }
+
+    /**
+     * @param Utilisateur|null $utilisateur
+     * 
+     * @return $this
+     */
+    public function setUtilisateur(?Utilisateur $utilisateur): self
+    {
+        $this->utilisateur = $utilisateur;
+
+        return $this;
+    }
+
+    /**
+     * @return array|null
+     */
+    public function getValeursModifiees(): ?array
+    {
+        return $this->valeurs_modifiees;
+    }
+
+    /**
+     * @param array|null $valeurs_modifiees
+     * 
+     * @return $this
+     */
+    public function setValeursModifiees(?array $valeurs_modifiees): self
+    {
+        $this->valeurs_modifiees = $valeurs_modifiees;
+
+        return $this;
+    }
+}

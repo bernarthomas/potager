@@ -3,8 +3,12 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use \DateTimeInterface;
 
 /**
+ * Class Recolte
+ * @package App\Entity
+ * 
  * @ORM\Entity(repositoryClass="App\Repository\RecolteRepository")
  */
 class Recolte
@@ -37,16 +41,27 @@ class Recolte
      */
     private $poids;
 
+    /**
+     * @return int|null
+     */
     public function getId(): ?int
     {
         return $this->id;
     }
 
+    /**
+     * @return string|null
+     */
     public function getCommentaire(): ?string
     {
         return $this->commentaire;
     }
 
+    /**
+     * @param string|null $commentaire
+     * 
+     * @return $this
+     */
     public function setCommentaire(?string $commentaire): self
     {
         $this->commentaire = $commentaire;
@@ -54,11 +69,19 @@ class Recolte
         return $this;
     }
 
+    /**
+     * @return Culture|null
+     */
     public function getCulture(): ?Culture
     {
         return $this->culture;
     }
 
+    /**
+     * @param Culture|null $culture
+     * 
+     * @return $this
+     */
     public function setCulture(?Culture $culture): self
     {
         $this->culture = $culture;
@@ -66,23 +89,39 @@ class Recolte
         return $this;
     }
 
-    public function getDate(): ?\DateTimeInterface
+    /**
+     * @return DateTimeInterface|null
+     */
+    public function getDate(): ?DateTimeInterface
     {
         return $this->date;
     }
 
-    public function setDate(\DateTimeInterface $date): self
+    /**
+     * @param DateTimeInterface $date
+     * 
+     * @return $this
+     */
+    public function setDate(DateTimeInterface $date): self
     {
         $this->date = $date;
 
         return $this;
     }
 
+    /**
+     * @return float|null
+     */
     public function getPoids(): ?float
     {
         return $this->poids;
     }
 
+    /**
+     * @param float $poids
+     * 
+     * @return $this
+     */
     public function setPoids(float $poids): self
     {
         $this->poids = $poids;
