@@ -20,6 +20,10 @@ use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Symfony\Component\Security\Guard\Authenticator\AbstractFormLoginAuthenticator;
 use Symfony\Component\Security\Http\Util\TargetPathTrait;
 
+/**
+ * Class PotagerAuthenticator
+ * @package App\Security
+ */
 class PotagerAuthenticator extends AbstractFormLoginAuthenticator
 {
     use TargetPathTrait;
@@ -123,7 +127,7 @@ class PotagerAuthenticator extends AbstractFormLoginAuthenticator
             return new RedirectResponse($targetPath);
         }
 
-        return new RedirectResponse($this->urlGenerator->generate('secure'));
+        return new RedirectResponse($this->urlGenerator->generate('tableau_de_bord'));
     }
 
     /**

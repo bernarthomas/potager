@@ -2,11 +2,14 @@
 
 namespace App\Repository;
 
+use App\Entity\Entite;
 use App\Entity\Historique;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 
 /**
+ * Class HistoriqueRepository
+ * @package App\Repository
  * @method Historique|null find($id, $lockMode = null, $lockVersion = null)
  * @method Historique|null findOneBy(array $criteria, array $orderBy = null)
  * @method Historique[]    findAll()
@@ -19,32 +22,21 @@ class HistoriqueRepository extends ServiceEntityRepository
         parent::__construct($registry, Historique::class);
     }
 
-    // /**
-    //  * @return Historique[] Returns an array of Historique objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    /**
+     * @param $libelleEntite
+     *
+     * @return mixed
+     */
+    public function findByEntiteLibelle($libelleEntite)
     {
         return $this->createQueryBuilder('h')
-            ->andWhere('h.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('h.id', 'ASC')
+            ->join(Entite::class, 'e', 'WITH', 'h.entite = e')
+            ->andWhere('e.libelle = :libelle')
+            ->setParameter('libelle', $libelleEntite)
+            ->orderBy('h.date', 'DESC')
             ->setMaxResults(10)
             ->getQuery()
             ->getResult()
         ;
     }
-    */
-
-    /*
-    public function findOneBySomeField($value): ?Historique
-    {
-        return $this->createQueryBuilder('h')
-            ->andWhere('h.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
 }

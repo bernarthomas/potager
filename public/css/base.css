@@ -6,3 +6,4 @@ body {font-family: sans-serif; height: 100%; margin: 0; line-height: 1.5;}
 a {color: #101010; text-decoration: none;}
 #application {color: #FFFFFF; font-size: 3rem; line-height: 4rem; padding-left: 2rem;}
 .head_link {color: #FFFFFF; line-height: 4rem; padding-right: 2rem;}
+h1 {line-height: 2rem;}

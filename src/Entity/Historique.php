@@ -40,7 +40,7 @@ class Historique
     /**
      * @ORM\Column(type="integer")
      */
-    private $entite_id;
+    private $occurenceId;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Utilisateur", inversedBy="historique")
@@ -124,19 +124,19 @@ class Historique
     /**
      * @return int|null
      */
-    public function getEntiteId(): ?int
+    public function getOccurenceId(): ?int
     {
-        return $this->entite_id;
+        return $this->occurenceId;
     }
 
     /**
-     * @param int $entite_id
-     * 
+     * @param int $occurenceId
+     *
      * @return $this
      */
-    public function setEntiteId(int $entite_id): self
+    public function setOccurenceId(int $occurenceId): self
     {
-        $this->entite_id = $entite_id;
+        $this->occurenceId = $occurenceId;
 
         return $this;
     }

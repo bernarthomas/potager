@@ -12,7 +12,6 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Entity(repositoryClass="App\Repository\CultureRepository")
  */
-
 class Culture
 {
     /**
@@ -58,6 +57,7 @@ class Culture
 
     /**
      * @param string $libelle
+     *
      * @return $this
      */
     public function setLibelle(string $libelle): self

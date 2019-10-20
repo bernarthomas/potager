@@ -1,0 +1,14 @@
+{% extends 'head_extends_base.html.twig' %}
+
+{% block title %}Accueil - {{ parent() }}{% endblock %}
+
+{% block contenu %}
+    <div class="encart">{% include 'tableau_de_bord/action_admin.html.twig' %}</div>
+    <div class="encart">{% include 'tableau_de_bord/entite_admin.html.twig' %}</div>
+    <div class="encart"></div>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="/css/secure.css">
+{% endblock %}

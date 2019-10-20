@@ -40,6 +40,6 @@ security:
         # - { path: ^/admin, roles: ROLE_ADMIN }
          - { path: ^/login$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
          - { path: ^/enregistrer, roles: ROLE_ADMIN }
-         - { path: ^/secure, roles: ROLE_ADMIN }
+         - { path: ^/tableau_de_bord, roles: ROLE_ADMIN }
          - { path: ^/bin/console server:start, roles: ROLE_USER }
          - { path: ^/, roles: IS_AUTHENTICATED_ANONYMOUSLY }
