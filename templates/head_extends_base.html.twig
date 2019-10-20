@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block head %}
+    {% block header %} <a id="application" href="{{ path('principal') }}" >potager.ddns.net</a>{% endblock %}
+    {% block utilisateur %}
+        {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+            <a class="head_link" href="{{ path('app_logout') }}" >déconnexion</a>
+        {% elseif is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+            <a class="head_link" href="{{ path('app_logout') }}" >déconnexion</a>
+        {% elseif is_granted('IS_AUTHENTICATED_ANONYMOUSLY') %}
+            <a class="head_link" href="{{ path('app_login') }}" >connexion</a>
+        {% endif %}
+    {% endblock %}
+{% endblock %}

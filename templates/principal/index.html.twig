@@ -1,5 +1,15 @@
-{% extends 'base.html.twig' %}
+{% extends 'head_extends_base.html.twig' %}
 
 {% block title %}Accueil - {{ parent() }}{% endblock %}
+
+{% block contenu %}
+    <div class="encart">{% include 'principal/presentation.html.twig' %}</div>
+    <div class="encart recolte2019">{% include 'principal/recoltes2019.html.twig' %}</div>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="/css/recoltes2019.css">
+{% endblock %}
 
 

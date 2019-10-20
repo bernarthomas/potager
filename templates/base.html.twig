@@ -1,26 +1,14 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
     <head>
         <meta charset="UTF-8">
-        <title>{% block title %}Potager{% endblock %}</title>
+        <title>{% block title %}potager.ddns.net{% endblock %}</title>
         {% block stylesheets %}<link rel="stylesheet" href="/css/base.css">{% endblock %}
     </head>
     <body>
         {% block body %}
-            <section class="container">
-                <div class="header">
-                    {% block header %} <a href="{{ path('principal') }}" >Potager</a>{% endblock %}
-                    {% block utilisateur %}
-                        {% if app.user is defined %}
-                        <a href="{{ path('app_logout') }}" >déconnexion</a>
-                        {% else %}
-                        <a href="{{ path('app_login') }}" >connexion</a>
-                        {% endif %}
-                    {% endblock %}
-                </div>
-                <div class="bodytitle">{% block bodytitle %}Bienvenue{% endblock %}</div>
-                <div class="content">{% block content %}content{% endblock %}</div>
-            </section>
+            <div id="head">{% block head %}{% endblock %}</div>
+            <div id="contenu">{% block contenu %}{% endblock %}</div>
         {% endblock %}
         {% block javascripts %}{% endblock %}
     </body>
