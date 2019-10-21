@@ -1,7 +1,6 @@
 <?php
 namespace App\Service;
 
-use App\Entity\Action;
 use App\Entity\Entite;
 use App\Entity\Historique;
 use App\Entity\Utilisateur;
@@ -49,7 +48,7 @@ class EntiteAdmin
     }
 
     /**
-     * @param Action $action
+     * @param Entite $entite
      */
     public function cree(Entite $entite)
     {
@@ -79,7 +78,7 @@ class EntiteAdmin
     }
 
     /**
-     * @return Action[]
+     * @return Entite[]
      */
     public function liste()
     {
@@ -91,7 +90,7 @@ class EntiteAdmin
      */
     public function historique()
     {
-        return $this->repositoryHistorique->findByEntiteLibelle(Entite::class);
+        return $this->repositoryHistorique->findByEntiteLibelleLike();
     }
 
     /**

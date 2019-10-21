@@ -1,10 +1,11 @@
 {% if historique is empty %}
 <p>Aucun résultat</p>
 {% else %}
+
 <table>
     <tr><th>date</th><th>action</th><th>entite</th><th>occurence</th><th>utilisateur</th><th>valeurs</th></tr>
     {% for valeur in historique %}
-    <tr><td>{{valeur.date|date("d/m/Y H:i:s")}}</td><td>{{valeur.action.libelle}}</td><td>{{valeur.entite.libelle}}</td><td>{{valeur.occurenceId}}</td><td>{{valeur.utilisateur.email}}</td><td>{{valeur.valeursModifiees | json_encode}}</td></tr>
+    <tr><td>{{valeur.date|date("d/m/Y H:i:s")}}</td><td>{{valeur.action.libelle}}</td><td>{{valeur.entite.libelle}}</td><td>{{valeur.occurenceId}}</td><td>{{valeur.utilisateur.email}}</td><td>{{ valeur.valeursModifiees.libelle }}</td></tr>
     {% endfor %}
 </table>
 {% endif %}

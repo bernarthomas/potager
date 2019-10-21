@@ -39,4 +39,18 @@ class HistoriqueRepository extends ServiceEntityRepository
             ->getResult()
         ;
     }
+
+    /**
+     * @return mixed
+     */
+    public function findByEntiteLibelleLike()
+    {
+        return $this->createQueryBuilder('h')
+            ->andWhere("h.valeursModifiees LIKE '%App\\\Entity%'")
+            ->orderBy('h.date', 'DESC')
+            ->setMaxResults(10)
+            ->getQuery()
+            ->getResult()
+            ;
+    }
 }

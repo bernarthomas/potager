@@ -13,13 +13,6 @@
         <div class="form-group"><button type="submit" id="action_creer" name="action[creer]" class="btn-primary btn">Créer</button></div>
         {{ form_end(form_creer) }}
     </div>
-    <div class="encart">
-        <h2>Modifier</h2>
-        {{ form_start(form_creer) }}
-        {{ form_widget(form_creer) }}
-        <div class="form-group"><button type="submit" id="action_modifier" name="action[modifier]" class="btn-primary btn">Modifier</button></div>
-        {{ form_end(form_creer) }}
-    </div>
     <div class="encart historique">
         <h2>Historique</h2>
         {% include 'tableau_de_bord/historique_list.html.twig' %}

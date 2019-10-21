@@ -51,7 +51,7 @@ class Historique
     /**
      * @ORM\Column(type="array", nullable=true)
      */
-    private $valeurs_modifiees = [];
+    private $valeursModifiees = [];
 
     /**
      * @return int|null
@@ -166,17 +166,17 @@ class Historique
      */
     public function getValeursModifiees(): ?array
     {
-        return $this->valeurs_modifiees;
+        return $this->valeursModifiees;
     }
 
     /**
-     * @param array|null $valeurs_modifiees
+     * @param array|null $valeursModifiees
      * 
      * @return $this
      */
-    public function setValeursModifiees(?array $valeurs_modifiees): self
+    public function setValeursModifiees(?array $valeursModifiees): self
     {
-        $this->valeurs_modifiees = $valeurs_modifiees;
+        $this->valeursModifiees = $valeursModifiees;
 
         return $this;
     }
