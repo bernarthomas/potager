@@ -3,12 +3,16 @@
 {% block title %}Accueil - {{ parent() }}{% endblock %}
 
 {% block contenu %}
-    <div class="encart">{% include 'tableau_de_bord/action_admin.html.twig' %}</div>
-    <div class="encart">{% include 'tableau_de_bord/entite_admin.html.twig' %}</div>
-    <div class="encart"></div>
+    <div class="encart liens">
+        <h2>Administrer</h2>
+        {% include 'tableau_de_bord/action_admin.html.twig' %}
+        {% include 'tableau_de_bord/entite_admin.html.twig' %}
+        {% include 'tableau_de_bord/culture_admin.html.twig' %}
+        {% include 'tableau_de_bord/recolte_admin.html.twig' %}
+    </div>
 {% endblock %}
 
 {% block stylesheets %}
     {{ parent() }}
-    <link rel="stylesheet" href="/css/secure.css">
+    <link rel="stylesheet" href="/css/tableau_de_bord.css">
 {% endblock %}

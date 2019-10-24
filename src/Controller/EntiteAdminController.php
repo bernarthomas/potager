@@ -27,7 +27,7 @@ class EntiteAdminController extends AbstractController
     }
 
     /**
-     * @Route("/tableau_de_bord/entite_admin", name="entite_index")
+     * @Route("/tableau_de_bord/entite", name="entite_index")
      *
      * @return Response
      */

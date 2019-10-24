@@ -1,10 +1,10 @@
 {% extends 'head_extends_base.html.twig' %}
-{% block title %}Gérer les Entités - {{ parent() }}{% endblock %}
-{% block header %}{{ parent() }} <a href="{{ path('tableau_de_bord') }}"><h1>Gérer les Entités</h1></a>{% endblock %}
+{% block title %}Gérer les récoltes - {{ parent() }}{% endblock %}
+{% block header %}{{ parent() }} <a href="{{ path('tableau_de_bord') }}"><h1>Gérer les récoltes</h1></a>{% endblock %}
 {% block contenu %}
     <div class="encart">
         <h2>Liste</h2>
-        {% include 'tableau_de_bord/entite_list.html.twig' %}
+        {% include 'tableau_de_bord/recolte_list.html.twig' %}
     </div>
     <div class="encart">
         <h2>Créer</h2>
