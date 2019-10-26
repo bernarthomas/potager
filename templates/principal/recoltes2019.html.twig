@@ -1,12 +1,17 @@
+<h2>Poids des récoltes 2019 (kg)</h2>
 <table>
-    <h2>Poids des récoltes 2019 (kg)</h2>
     <thead>
-        <tr><th></th><th>aou.</th><th>sep.</th><th>oct.</th><th></th><th></th></tr>
+        <tr>{% for titre in recoltes2019[0] %}<th>{{ titre }}</th>{% endfor %}</tr>
     </thead>
     <tbody>
-        <tr><th>aubergine</th><td>0.229</td><td>0</td><td>0</td><td></td><td></td></tr>
-        <tr><th>betterave</th><td></td><td>1.499</td><td>0</td><td></td><td></td></tr>
-        <tr><th>concombre</th><td>0.5</td><td>0.616</td><td>0.011</td><td></td><td></td></tr>
-        <tr><th>cornichon</th><td>0.78</td><td>0.072</td><td>0.02</td><td></td><td></td></tr>
+    {% for cle, recolte in recoltes2019 %}
+        {% if cle is not same as(0) %}
+        <tr>
+        {% for titre in recoltes2019[0] %}
+            {% if titre == null %}<th>{{ cle }}</th>{% else %}<td>{% if attribute(recolte, titre) is defined %}{{ attribute(recolte, titre) }} {% endif %}{% endif %}</td>
+        {% endfor %}
+        </tr>
+        {% endif %}
+    {% endfor %}
     </tbody>
 </table>

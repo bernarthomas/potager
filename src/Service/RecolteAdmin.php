@@ -9,6 +9,7 @@ use App\Repository\ActionRepository;
 use App\Repository\EntiteRepository;
 use App\Repository\HistoriqueRepository;
 use App\Repository\RecolteRepository;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use \Datetime;
@@ -18,6 +19,9 @@ class RecolteAdmin
 {
     /** @var EntityManagerInterface  */
     private $entityManager;
+
+    /** @var array */
+    private $recoltes;
 
     /** @var ActionRepository  */
     private $repositoryAction;
@@ -101,11 +105,31 @@ class RecolteAdmin
     }
 
     /**
-     * @return Recolte[]
+     * @return array
      */
-    public function liste()
+    public function decore()
     {
-        return $this->repositoryRecolte->findBy([], ['date' => 'ASC']);
+        $retour = [];
+        $titres = [null];
+        foreach($this->recoltes as $recolte) {
+            $mois = $recolte->getMois();
+            $culture = $recolte->getCulture();
+            $titres[$mois] = $mois;
+            $retour[$culture][$mois] = $recolte->getPoids();
+        }
+        $retour[0] = $titres;
+
+        return $retour;
+    }
+
+    /**
+     * @param Entite $entite
+     *
+     * @return array
+     */
+    public function entiteToArray(Entite $entite) : array
+    {
+        return ['id' => $entite->getId(), 'libelle' => $entite->getLibelle()];
     }
 
     /**
@@ -114,6 +138,14 @@ class RecolteAdmin
     public function historique()
     {
         return $this->repositoryHistorique->findByEntiteLibelle(Recolte::class);
+    }
+
+    /**
+     * @return Recolte[]
+     */
+    public function liste()
+    {
+        return $this->repositoryRecolte->findBy([], ['date' => 'ASC']);
     }
 
     /**
@@ -142,13 +174,11 @@ class RecolteAdmin
 
         return $retour;
     }
-    /**
-     * @param Entite $entite
-     *
-     * @return array
-     */
-    public function entiteToArray(Entite $entite) : array
+
+    public function setRecoltes(array $recoltes)
     {
-        return ['id' => $entite->getId(), 'libelle' => $entite->getLibelle()];
+        $this->recoltes = $recoltes;
+
+        return $this;
     }
 }
