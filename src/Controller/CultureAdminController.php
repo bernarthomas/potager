@@ -3,17 +3,19 @@
 namespace App\Controller;
 
 use App\Entity\Culture;
-use App\Entity\Entite;
 use App\Form\CultureType;
-use App\Form\EntiteType;
 use App\Service\CultureAdmin;
-use App\Service\EntiteAdmin;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use \Exception;
 
+/**
+ * Class CultureAdminController
+ * @package App\Controller
+ */
 class CultureAdminController extends AbstractController
 {
     /** @var CultureAdmin  */
@@ -22,7 +24,7 @@ class CultureAdminController extends AbstractController
     /**
      * CultureAdminController constructor.
      *
-     * @param EntiteAdmin $sfServEntiteAdmin
+     * @param CultureAdmin $sfServCultureAdmin
      */
     public function __construct(CultureAdmin $sfServCultureAdmin)
     {
@@ -55,6 +57,8 @@ class CultureAdminController extends AbstractController
      * @param Request $request
      *
      * @return RedirectResponse
+     *
+     * @throws Exception
      */
     public function ajouter(Request $request)
     {

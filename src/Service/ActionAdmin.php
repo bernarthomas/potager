@@ -2,22 +2,21 @@
 namespace App\Service;
 
 use App\Entity\Action;
-use App\Entity\Entite;
-use App\Entity\Historique;
-use App\Entity\Utilisateur;
+use App\Interfaces\EntiteInterface;
 use App\Repository\ActionRepository;
 use App\Repository\EntiteRepository;
 use App\Repository\HistoriqueRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
-use \Datetime;
 use \Exception;
 
-class ActionAdmin
+/**
+ * Class ActionAdmin
+ * @package App\Service
+ */
+class ActionAdmin extends ServiceParent
 {
-    /** @var EntityManagerInterface  */
-    private $entityManager;
-
     /** @var ActionRepository  */
     private $repositoryAction;
 
@@ -27,73 +26,62 @@ class ActionAdmin
     /** @var HistoriqueRepository  */
     private $repositoryHistorique;
 
-    /** @var TokenStorageInterface  */
-    private $tokenStorage;
+    /** @var EntiteAdmin  */
+    private $sfServEntiteAdmin;
+
+    /** @var Historique  */
+    private $sfServHistorique;
 
     /**
      * ActionAdmin constructor.
      *
      * @param ActionRepository $repositoryAction
+     * @param ContainerInterface $container
      * @param EntityManagerInterface $entityManager
      * @param EntiteRepository $repositoryEntite
      * @param HistoriqueRepository $repositoryHistorique
      * @param TokenStorageInterface $tokenStorage
      */
-    public function __construct(ActionRepository $repositoryAction, EntityManagerInterface $entityManager, EntiteRepository $repositoryEntite, HistoriqueRepository $repositoryHistorique, TokenStorageInterface $tokenStorage)
+    public function __construct(ActionRepository $repositoryAction, ContainerInterface $container, EntiteAdmin $sfServEntiteAdmin, EntityManagerInterface $entityManager, EntiteRepository $repositoryEntite, Historique $sfServHistorique, HistoriqueRepository $repositoryHistorique, TokenStorageInterface $tokenStorage)
     {
-        $this->entityManager = $entityManager;
+        parent::__construct($container, $entityManager, $tokenStorage);
         $this->repositoryAction = $repositoryAction;
         $this->repositoryEntite = $repositoryEntite;
         $this->repositoryHistorique = $repositoryHistorique;
-        $this->tokenStorage = $tokenStorage;
+        $this->sfServEntiteAdmin = $sfServEntiteAdmin;
+        $this->sfServHistorique = $sfServHistorique;
     }
 
     /**
+     * cherche l'entite "Action"
+     * si l'entite "Action" n'existe pas demande la creation de l'entite "Action" et la creation de l'historique de l'entité "Action"
+     * persiste, flush l'Action passée en paramètre
+     * demande la création de l'historique de l'action "Action"
+     *
      * @param Action $action
+     *
+     * @throws Exception
      */
-    public function cree(Action $action)
+    public function cree(Action $action = null)
     {
         try{
             $this->entityManager->beginTransaction();
-            $maintenant = new DateTime();
-            /** @var Utilisateur $utilisateur */
-            $utilisateur = $this->tokenStorage->getToken()->getUser();
-            $this->entityManager->persist($action);
-            $this->entityManager->flush();
-            $entiteEntite = $this->repositoryEntite->findOneBy(['libelle' => Entite::class]);
-            if (empty($entiteEntite)) {
-                $entiteEntite = new Entite();
-                $entiteEntite->setLibelle(Entite::class);
-                $this->entityManager->persist($entiteEntite);
-                $historiqueEntite = new Historique();
-                $this->entityManager->persist($historiqueEntite);
-                $historiqueEntite
-                    ->setAction($action)
-                    ->setDate($maintenant)
-                    ->setEntite($entiteEntite)
-                    ->setOccurenceId($entiteEntite->getId())
-                    ->setUtilisateur($utilisateur)
-                    ->setValeursModifiees($this->entiteToArray($entiteEntite));
-                $this->entityManager->persist($historiqueEntite);
-            }
+        if (empty($action)) {
+            $action = $this->repositoryAction->findOneBy(['libelle' => 'create']);
+        }
+        if (empty($action)) {
+            $action = new Action();
+            $action->setLibelle('create');
+        }
+        $this->entityManager->persist($action);
+        $this->entityManager->flush();
+        $entiteAction = $this->repositoryEntite->findOneBy(['libelle' => Action::class]);
+        if (empty($entiteAction)) {
+            $this->sfServEntiteAdmin->cree();
             $entiteAction = $this->repositoryEntite->findOneBy(['libelle' => Action::class]);
-            if (empty($entiteAction)) {
-                $entiteAction = new Entite();
-                $entiteAction->setLibelle(Action::class);
-                $this->entityManager->persist($entiteAction);
-            }
-            $historiqueAction = new Historique();
-            $this->entityManager->persist($historiqueAction);
-            $historiqueAction
-                ->setAction($action)
-                ->setDate($maintenant)
-                ->setEntite($entiteAction)
-                ->setOccurenceId($action->getId())
-                ->setUtilisateur($utilisateur)
-                ->setValeursModifiees($this->actionToArray($action))
-            ;
-            $this->entityManager->persist($historiqueAction);
-            $this->entityManager->flush();
+        }
+        $actionCreate = $this->repositoryAction->findOneBy(['libelle' => 'create']);
+        $this->sfServHistorique->cree($actionCreate, $entiteAction, $action);
             $this->entityManager->commit();
         } catch (Exception $e) {
             $this->entityManager->rollback();
@@ -113,26 +101,6 @@ class ActionAdmin
      */
     public function historique()
     {
-        return $this->repositoryHistorique->findByEntiteLibelle(Action::class);
-    }
-
-    /**
-     * @param Action $action
-     *
-     * @return array
-     */
-    public function actionToArray(Action $action) : array
-    {
-        return ['id' => $action->getId(), 'libelle' => $action->getLibelle()];
-    }
-
-    /**
-     * @param Entite $entite
-     *
-     * @return array
-     */
-    public function entiteToArray(Entite $entite) : array
-    {
-        return ['id' => $entite->getId(), 'libelle' => $entite->getLibelle()];
+        return $this->repositoryHistorique->findByAction();
     }
 }

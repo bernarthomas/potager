@@ -90,11 +90,11 @@ class Historique
     }
 
     /**
-     * @param  $date
+     * @param  DateTimeInterface $date
      * 
      * @return $this
      */
-    public function setDate( $date): self
+    public function setDate(DateTimeInterface $date): self
     {
         $this->date = $date;
 

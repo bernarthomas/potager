@@ -7,6 +7,10 @@ use App\Service\RecolteAdmin;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 
+/**
+ * Class PrincipalController
+ * @package App\Controller
+ */
 class PrincipalController extends AbstractController
 {
     /** @var Recolte2019Repository  */
@@ -18,7 +22,9 @@ class PrincipalController extends AbstractController
     /**
      * PrincipalController constructor.
      *
-     * @param RecolteAdmin $sfServRecolteAdmin
+     * @param RecolteAdmin $sfServRecolte
+     *
+     * @param Recolte2019Repository $repositoryRecolte2019
      */
     public function __construct(RecolteAdmin $sfServRecolte, Recolte2019Repository $repositoryRecolte2019)
     {

@@ -4,7 +4,6 @@ namespace App\Controller;
 
 use App\Entity\Recolte;
 use App\Form\RecolteType;
-use App\Service\CultureAdmin;
 use App\Service\RecolteAdmin;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -12,9 +11,13 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
+/**
+ * Class RecolteAdminController
+ * @package App\Controller
+ */
 class RecolteAdminController extends AbstractController
 {
-    /** @var CultureAdmin  */
+    /** @var RecolteAdmin  */
     private $sfServRecolteAdmin;
 
     /**

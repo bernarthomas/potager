@@ -25,3 +25,6 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+    App\Service\ActionAdmin:
+        arguments: ['@App\Repository\ActionRepository', '@service_container', '@App\Service\EntiteAdmin', '@doctrine.orm.entity_manager', '@App\Repository\EntiteRepository', '@App\Service\Historique']
+        public: true

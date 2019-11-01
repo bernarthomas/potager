@@ -7,6 +7,9 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 
 /**
+ * Class Recolte2019Repository
+ * @package App\Repository
+ *
  * @method Recolte2019|null find($id, $lockMode = null, $lockVersion = null)
  * @method Recolte2019|null findOneBy(array $criteria, array $orderBy = null)
  * @method Recolte2019[]    findAll()
@@ -14,6 +17,11 @@ use Doctrine\Common\Persistence\ManagerRegistry;
  */
 class Recolte2019Repository extends ServiceEntityRepository
 {
+    /**
+     * Recolte2019Repository constructor.
+     *
+     * @param ManagerRegistry $registry
+     */
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Recolte2019::class);

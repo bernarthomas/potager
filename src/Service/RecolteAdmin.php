@@ -1,25 +1,20 @@
 <?php
 namespace App\Service;
 
-use App\Entity\Entite;
-use App\Entity\Historique;
 use App\Entity\Recolte;
-use App\Entity\Utilisateur;
 use App\Repository\ActionRepository;
 use App\Repository\EntiteRepository;
 use App\Repository\HistoriqueRepository;
 use App\Repository\RecolteRepository;
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
-use \Datetime;
-use \Exception;
 
-class RecolteAdmin
+/**
+ * Class RecolteAdmin
+ * @package App\Service
+ */
+class RecolteAdmin extends ServiceParent
 {
-    /** @var EntityManagerInterface  */
-    private $entityManager;
-
     /** @var array */
     private $recoltes;
 
@@ -35,8 +30,8 @@ class RecolteAdmin
     /** @var RecolteRepository  */
     private $repositoryRecolte;
 
-    /** @var TokenStorageInterface  */
-    private $tokenStorage;
+    /** @var Historique  */
+    private $sfServHistorique;
 
     /**
      * RecolteAdmin constructor.
@@ -45,59 +40,41 @@ class RecolteAdmin
      * @param EntityManagerInterface $entityManager
      * @param EntiteRepository $repositoryEntite
      * @param HistoriqueRepository $repositoryHistorique
+     * @param Historique $sfServHistorique
      * @param RecolteRepository $repositoryRecolte
      * @param TokenStorageInterface $tokenStorage
      */
-    public function __construct(ActionRepository $repositoryAction, EntityManagerInterface $entityManager, EntiteRepository $repositoryEntite, HistoriqueRepository $repositoryHistorique, RecolteRepository $repositoryRecolte, TokenStorageInterface $tokenStorage)
+    public function __construct(ActionRepository $repositoryAction, EntityManagerInterface $entityManager, EntiteRepository $repositoryEntite, HistoriqueRepository $repositoryHistorique, Historique $sfServHistorique, RecolteRepository $repositoryRecolte, TokenStorageInterface $tokenStorage)
     {
         $this->entityManager = $entityManager;
         $this->repositoryAction = $repositoryAction;
         $this->repositoryEntite = $repositoryEntite;
         $this->repositoryHistorique = $repositoryHistorique;
         $this->repositoryRecolte = $repositoryRecolte;
+        $this->sfServHistorique = $sfServHistorique;
         $this->tokenStorage = $tokenStorage;
     }
 
     /**
+     * cherche l'action "create"
+     * si ne trouve pas l'action "create" demande la creation de l'action "create" et demande la création de l'historique de l'action "create"
+     * cherche l'entite "Recolte"
+     * si l'entite "Recolte" n'existe pas demande la création de l'entite "Recolte" et demande la creation de l'historique de l'entité "Recolte"
+     * crée la recolte passé en parametre par le formulaire et demande la creation de l'historique de la recolte pour cet id recolte et l'entite Recolte
+     *
      * @param Recolte $recolte
+     *
+     * @throws \Exception
      */
     public function cree(Recolte $recolte)
     {
         try{
             $this->entityManager->beginTransaction();
-            $maintenant = new DateTime();
-            /** @var Utilisateur $utilisateur */
-            $utilisateur = $this->tokenStorage->getToken()->getUser();
             $this->entityManager->persist($recolte);
             $this->entityManager->flush();
-            $historique = new Historique();
             $action = $this->repositoryAction->findOneBy(['libelle' => 'create']);
             $entite = $this->repositoryEntite->findOneBy(['libelle' => Recolte::class]);
-            if (empty($entite)) {
-                $entite = new Entite();
-                $entite->setLibelle(Entite::class);
-                $this->entityManager->persist($entite);
-                $historiqueEntite = new Historique();
-                $this->entityManager->persist($historiqueEntite);
-                $historiqueEntite
-                    ->setAction($action)
-                    ->setDate($maintenant)
-                    ->setEntite($entite)
-                    ->setOccurenceId($entite->getId())
-                    ->setUtilisateur($utilisateur)
-                    ->setValeursModifiees($this->entiteToArray($entite));
-                $this->entityManager->persist($historiqueEntite);
-            }
-            $this->entityManager->persist($historique);
-            $historique
-                ->setAction($action)
-                ->setDate($maintenant)
-                ->setEntite($entite)
-                ->setOccurenceId($recolte->getId())
-                ->setUtilisateur($utilisateur)
-                ->setValeursModifiees($this->recolteToArray($recolte));
-            $this->entityManager->persist($historique);
-            $this->entityManager->flush();
+            $this->sfServHistorique->cree($action, $entite, $recolte);
             $this->entityManager->commit();
         } catch (Exception $e) {
             $this->entityManager->rollback();
@@ -123,21 +100,11 @@ class RecolteAdmin
     }
 
     /**
-     * @param Entite $entite
-     *
-     * @return array
-     */
-    public function entiteToArray(Entite $entite) : array
-    {
-        return ['id' => $entite->getId(), 'libelle' => $entite->getLibelle()];
-    }
-
-    /**
      * @return mixed
      */
     public function historique()
     {
-        return $this->repositoryHistorique->findByEntiteLibelle(Recolte::class);
+        return $this->repositoryHistorique->findByRecolte();
     }
 
     /**
@@ -149,32 +116,10 @@ class RecolteAdmin
     }
 
     /**
-     * @param Recolte $recolte
+     * @param array $recoltes
      *
-     * @return array
+     * @return $this
      */
-    public function recolteToArray(Recolte $recolte) : array
-    {
-        $retour = [];
-        $id = $recolte->getId();
-        $commentaire = $recolte->getCommentaire();
-        $date = $recolte->getDate();
-        $poids = $recolte->getPoids();
-        if (!empty($date)) {
-            $dateFormatee = $date->format('Y-m-d h:i:s');
-        }
-        $culture = $recolte->getCulture();
-        if (!empty($culture)) {
-            $idCulture = $culture->getId();
-            $libelleCulture = $culture->getLibelle();
-        }
-        if (!empty($id) && !empty($commentaire) && !empty($dateFormatee) && !empty($idCulture) && !empty($libelleCulture)  && !empty($poids)) {
-            $retour = ['id' => $id, 'commentaire' => $commentaire,  'date' => $dateFormatee, 'id_culture' => $idCulture, 'libelle_culture' => $libelleCulture, 'poids' => $poids];
-        }
-
-        return $retour;
-    }
-
     public function setRecoltes(array $recoltes)
     {
         $this->recoltes = $recoltes;

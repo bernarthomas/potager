@@ -33,6 +33,7 @@ class RecolteType extends AbstractType
                 'placeholder' => ''
             ])
             ->add('poids')
+            ->add('prixPaye')
             ->add('commentaire')
         ;
     }

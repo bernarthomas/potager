@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Interfaces\Historisable;
 use Doctrine\ORM\Mapping as ORM;
 use \DateTimeInterface;
 
@@ -11,7 +12,7 @@ use \DateTimeInterface;
  * 
  * @ORM\Entity(repositoryClass="App\Repository\RecolteRepository")
  */
-class Recolte
+class Recolte implements Historisable
 {
     /**
      * @ORM\Id()
@@ -41,6 +42,32 @@ class Recolte
      */
     private $poids;
 
+    /**
+     * @ORM\Column(type="float")
+     */
+    private $prixPaye;
+
+    /**
+     * @return array
+     */
+    public function toArray() : array
+    {
+        $id = $this->getId();
+        $commentaire = $this->getCommentaire();
+        $date = $this->getDate();
+        $poids = $this->getPoids();
+        if (!empty($date)) {
+            $dateFormatee = $date->format('Y-m-d h:i:s');
+        }
+        $culture = $this->getCulture();
+        if (!empty($culture)) {
+            $idCulture = $culture->getId();
+            $libelleCulture = $culture->getLibelle();
+        }
+        $retour = ['id' => $id, 'commentaire' => $commentaire,  'date' => $dateFormatee, 'id_culture' => $idCulture, 'libelle_culture' => $libelleCulture, 'poids' => $poids];
+
+        return $retour;
+    }
     /**
      * @return int|null
      */
@@ -125,6 +152,26 @@ class Recolte
     public function setPoids(float $poids): self
     {
         $this->poids = $poids;
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPrixPaye()
+    {
+        return $this->prixPaye;
+    }
+
+    /**
+     * @param mixed $prixPaye
+     *
+     * @return Recolte
+     */
+    public function setPrixPaye($prixPaye)
+    {
+        $this->prixPaye = $prixPaye;
 
         return $this;
     }

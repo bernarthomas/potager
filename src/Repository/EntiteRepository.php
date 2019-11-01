@@ -3,11 +3,13 @@
 namespace App\Repository;
 
 use App\Entity\Entite;
+use App\Entity\Historique;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 
 /**
  * Class EntiteRepository
+ *
  * @package App\Repository
  * @method Entite|null find($id, $lockMode = null, $lockVersion = null)
  * @method Entite|null findOneBy(array $criteria, array $orderBy = null)
@@ -16,6 +18,11 @@ use Doctrine\Common\Persistence\ManagerRegistry;
  */
 class EntiteRepository extends ServiceEntityRepository
 {
+    /**
+     * EntiteRepository constructor.
+     *
+     * @param ManagerRegistry $registry
+     */
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Entite::class);

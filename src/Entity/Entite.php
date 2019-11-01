@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use App\Interfaces\EntiteInterface;
+use App\Interfaces\Historisable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -12,7 +14,7 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Entity(repositoryClass="App\Repository\EntiteRepository")
  */
-class Entite
+class Entite implements Historisable
 {
     /**
      * @ORM\Id()
@@ -37,6 +39,14 @@ class Entite
     public function __construct()
     {
         $this->historique = new ArrayCollection();
+    }
+
+    /**
+     * @return array
+     */
+    public function toArray() : array
+    {
+        return ['id' => $this->getId(), 'libelle' => $this->getLibelle()];
     }
 
     /**

@@ -2,13 +2,17 @@
 
 namespace App\Repository;
 
+use App\Entity\Action;
+use App\Entity\Culture;
 use App\Entity\Entite;
 use App\Entity\Historique;
+use App\Entity\Recolte;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 
 /**
  * Class HistoriqueRepository
+ *
  * @package App\Repository
  * @method Historique|null find($id, $lockMode = null, $lockVersion = null)
  * @method Historique|null findOneBy(array $criteria, array $orderBy = null)
@@ -17,27 +21,74 @@ use Doctrine\Common\Persistence\ManagerRegistry;
  */
 class HistoriqueRepository extends ServiceEntityRepository
 {
+    /**
+     * HistoriqueRepository constructor.
+     *
+     * @param ManagerRegistry $registry
+     */
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Historique::class);
     }
 
     /**
-     * @param $libelleEntite
-     *
      * @return mixed
      */
-    public function findByEntiteLibelle($libelleEntite)
+    public function findByAction()
     {
         return $this->createQueryBuilder('h')
             ->join(Entite::class, 'e', 'WITH', 'h.entite = e')
-            ->andWhere('e.libelle = :libelle')
-            ->setParameter('libelle', $libelleEntite)
-            ->orderBy('h.date', 'DESC')
+            ->andWhere("e.libelle = '".Action::class."'")
+            ->orderBy('h.id', 'DESC')
             ->setMaxResults(10)
             ->getQuery()
             ->getResult()
-        ;
+            ;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function findByCulture()
+    {
+        return $this->createQueryBuilder('h')
+            ->join(Entite::class, 'e', 'WITH', 'h.entite = e')
+            ->andWhere("e.libelle = '".Culture::class."'")
+            ->orderBy('h.id', 'DESC')
+            ->setMaxResults(10)
+            ->getQuery()
+            ->getResult()
+            ;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function findByEntite()
+    {
+        return $this->createQueryBuilder('h')
+            ->join(Entite::class, 'e', 'WITH', 'h.entite = e')
+            ->andWhere("e.libelle = '".Entite::class."'")
+            ->orderBy('h.id', 'DESC')
+            ->setMaxResults(10)
+            ->getQuery()
+            ->getResult()
+            ;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function findByRecolte()
+    {
+        return $this->createQueryBuilder('h')
+            ->join(Entite::class, 'e', 'WITH', 'h.entite = e')
+            ->andWhere("e.libelle = '".Recolte::class."'")
+            ->orderBy('h.id', 'DESC')
+            ->setMaxResults(10)
+            ->getQuery()
+            ->getResult()
+            ;
     }
 
     /**

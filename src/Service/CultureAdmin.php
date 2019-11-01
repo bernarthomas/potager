@@ -1,99 +1,101 @@
 <?php
 namespace App\Service;
 
+use App\Entity\Action;
 use App\Entity\Culture;
 use App\Entity\Entite;
-use App\Entity\Historique;
-use App\Entity\Utilisateur;
+use App\Service\Historique as SfServHistorique;
+use App\Interfaces\EntiteInterface;
+use App\Interfaces\Historisable;
 use App\Repository\ActionRepository;
 use App\Repository\CultureRepository;
 use App\Repository\EntiteRepository;
 use App\Repository\HistoriqueRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
-use \Datetime;
 use \Exception;
 
-class CultureAdmin
+/**
+ * Class CultureAdmin
+ * @package App\Service
+ */
+class CultureAdmin extends ServiceParent
 {
-    /** @var EntityManagerInterface  */
-    private $entityManager;
+    /** @var CultureRepository  */
+    private $repositoryCulture;
 
     /** @var ActionRepository  */
     private $repositoryAction;
 
-    /** @var CultureRepository  */
-    private $repositoryCulture;
-
-    /** @var EntiteRepository  */
-    private $repositoryEntite;
-
     /** @var HistoriqueRepository  */
     private $repositoryHistorique;
 
-    /** @var TokenStorageInterface  */
-    private $tokenStorage;
+    /** @var EntiteAdmin  */
+    private $sfServEntite;
 
     /**
      * CultureAdmin constructor.
      *
      * @param ActionRepository $repositoryAction
-     * @param EntityManagerInterface $entityManager
+     * @param ContainerInterface $container
      * @param CultureRepository $repositoryCulture
+     * @param EntiteAdmin $sfServEntite
+     * @param EntityManagerInterface $entityManager
      * @param EntiteRepository $repositoryEntite
+     * @param Historique $sfServHistorique
      * @param HistoriqueRepository $repositoryHistorique
      * @param TokenStorageInterface $tokenStorage
      */
-    public function __construct(ActionRepository $repositoryAction, EntityManagerInterface $entityManager, CultureRepository $repositoryCulture, EntiteRepository $repositoryEntite, HistoriqueRepository $repositoryHistorique, TokenStorageInterface $tokenStorage)
+    public function __construct(ActionRepository  $repositoryAction, ContainerInterface $container, CultureRepository $repositoryCulture, EntiteAdmin $sfServEntite, EntityManagerInterface $entityManager, EntiteRepository $repositoryEntite, SfServHistorique $sfServHistorique, HistoriqueRepository $repositoryHistorique, TokenStorageInterface $tokenStorage)
     {
-        $this->entityManager = $entityManager;
-        $this->repositoryAction = $repositoryAction;
+        parent::__construct($container, $entityManager, $tokenStorage);
         $this->repositoryCulture = $repositoryCulture;
-        $this->repositoryEntite = $repositoryEntite;
+        $this->repositoryAction = $repositoryAction;
+        $this->repositoryEntite= $repositoryEntite;
         $this->repositoryHistorique = $repositoryHistorique;
-        $this->tokenStorage = $tokenStorage;
+        $this->sfServEntite = $sfServEntite;
+        $this->sfServHistorique = $sfServHistorique;
     }
 
     /**
-     * @param Culture $culture
+     * cherche l'action "create"
+     * si ne trouve pas l'action "create" demande la creation de l'action "create" et demande la création de l'historique de l'action "create"
+     * cherche l'entite "Culture"
+     * si l'entite "Culture" n'existe pas demande la création de l'entite "Culture" et demande la creation de l'historique de l'entité "Culture"
+     * cherche la culture "Culture"
+     * si la culture "Culture" n'existe pas crée la culture "Culture" et demande la creation de l'historique de la culture "Culture"
+     *
+     * @param EntiteInterface $culture
+     *
+     * @throws Exception
      */
-    public function cree(Culture $culture)
+    public function cree(Historisable $culture)
     {
         try{
             $this->entityManager->beginTransaction();
-            $maintenant = new DateTime();
-            /** @var Utilisateur $utilisateur */
-            $utilisateur = $this->tokenStorage->getToken()->getUser();
+            $action = $this->repositoryAction->findOneBy(['libelle' => 'create']);
+            if (empty($action)) {
+                $sfServAction = $this->container->get(ActionAdmin::class);
+                $sfServAction->cree();
+                $action = $this->repositoryAction->findOneBy(['libelle' => 'create']);
+            }
+            $entiteAction = $this->repositoryEntite->findOneBy(['libelle' => Action::class]);
+            $entiteEntite = $this->repositoryEntite->findOneBy(['libelle' => Entite::class]);
+            if (empty($entiteEntite) || empty($entiteAction)) {
+                $this->sfServEntite->cree();
+                $entiteEntite = $this->repositoryEntite->findOneBy(['libelle' => Entite::class]);
+            }
+            $entiteCulture = $this->repositoryEntite->findOneBy(['libelle' => Culture::class]);
+            if (empty($entiteCulture)) {
+                $entiteCulture = new Entite();
+                $entiteCulture->setLibelle(Culture::class);
+                $this->entityManager->persist($entiteCulture);
+                $this->sfServHistorique->cree($action, $entiteEntite, $entiteCulture);
+            }
             $this->entityManager->persist($culture);
             $this->entityManager->flush();
-            $historique = new Historique();
-            $action = $this->repositoryAction->findOneBy(['libelle' => 'create']);
-            $entite = $this->repositoryEntite->findOneBy(['libelle' => Culture::class]);
-            if (empty($entite)) {
-                $entite = new Entite();
-                $entite->setLibelle(Entite::class);
-                $this->entityManager->persist($entite);
-                $historiqueEntite = new Historique();
-                $this->entityManager->persist($historiqueEntite);
-                $historiqueEntite
-                    ->setAction($action)
-                    ->setDate($maintenant)
-                    ->setEntite($entite)
-                    ->setOccurenceId($entite->getId())
-                    ->setUtilisateur($utilisateur)
-                    ->setValeursModifiees($this->entiteToArray($entite));
-                $this->entityManager->persist($historiqueEntite);
-            }
-            $this->entityManager->persist($historique);
-            $historique
-                ->setAction($action)
-                ->setDate($maintenant)
-                ->setEntite($entite)
-                ->setOccurenceId($culture->getId())
-                ->setUtilisateur($utilisateur)
-                ->setValeursModifiees($this->cultureToArray($culture));
-            $this->entityManager->persist($historique);
-            $this->entityManager->flush();
+            $this->sfServHistorique->cree($action, $entiteCulture, $culture);
             $this->entityManager->commit();
         } catch (Exception $e) {
             $this->entityManager->rollback();
@@ -113,26 +115,6 @@ class CultureAdmin
      */
     public function historique()
     {
-        return $this->repositoryHistorique->findByEntiteLibelle(Culture::class);
-    }
-
-    /**
-     * @param Culture $culture
-     *
-     * @return array
-     */
-    public function cultureToArray(Culture $culture) : array
-    {
-        return ['id' => $culture->getId(), 'libelle' => $culture->getLibelle()];
-    }
-
-    /**
-     * @param Entite $entite
-     *
-     * @return array
-     */
-    public function entiteToArray(Entite $entite) : array
-    {
-        return ['id' => $entite->getId(), 'libelle' => $entite->getLibelle()];
+        return $this->repositoryHistorique->findByCulture();
     }
 }
