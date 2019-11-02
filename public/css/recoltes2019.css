@@ -1,2 +1,4 @@
+thead { display: table-header-group !important; }
+tbody { height: 20rem !important; overflow-y: hidden !important; display: table-row-group !important; }
 th {background: #03a945; color: #FFFFFF; opacity: 0.75;}
 .recolte2019 {height: 20rem;}

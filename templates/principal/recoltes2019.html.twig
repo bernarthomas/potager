@@ -1,9 +1,6 @@
 <h2>Poids des récoltes 2019 (kg)</h2>
 <table>
-    <thead>
         <tr>{% for titre in recoltes2019[0] %}<th>{{ titre }}</th>{% endfor %}</tr>
-    </thead>
-    <tbody>
     {% for cle, recolte in recoltes2019 %}
         {% if cle is not same as(0) %}
         <tr>
@@ -13,5 +10,4 @@
         </tr>
         {% endif %}
     {% endfor %}
-    </tbody>
 </table>
