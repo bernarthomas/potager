@@ -2,8 +2,10 @@ html {height: 100%; }
 body {font-family: sans-serif; height: 100%; margin: 0; line-height: 1.5;}
 #head {background-color: #03a945; color: #EDEDED; display: flex; flex-direction: row; justify-content: space-between; opacity: 0.75; position: fixed; top: 0; width: 100%;}
 #contenu {background-color: #D3D3D3; display: flex; flex-direction: row; flex-wrap: wrap; justify-content: space-around; min-height: calc(100% - 4rem); padding-top: 4rem;}
-.encart {background-color: #EDEDED; height: 10rem; margin-bottom: 2.5rem; margin-top: 2.5rem; padding: 1rem; width: 32rem;}
+.encart {background-color: #EDEDED; height: 15rem; margin-bottom: 2.5rem; margin-top: 2.5rem; padding: 1rem; width: 32rem;}
 a {color: #101010; text-decoration: none;}
 #application {color: #FFFFFF; font-size: 3rem; line-height: 4rem; padding-left: 2rem;}
 .head_link {color: #FFFFFF; line-height: 4rem; padding-right: 2rem;}
 h1 {line-height: 2rem;}
+table thead { display:block; }
+table tbody { height:8rem; overflow-y:scroll; display:block; }

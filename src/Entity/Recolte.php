@@ -56,10 +56,13 @@ class Recolte implements Historisable
         $commentaire = $this->getCommentaire();
         $date = $this->getDate();
         $poids = $this->getPoids();
+        $dateFormatee = null;
         if (!empty($date)) {
             $dateFormatee = $date->format('Y-m-d h:i:s');
         }
         $culture = $this->getCulture();
+        $idCulture = null;
+        $libelleCulture = null;
         if (!empty($culture)) {
             $idCulture = $culture->getId();
             $libelleCulture = $culture->getLibelle();

@@ -5,10 +5,15 @@ namespace App\Form;
 use App\Entity\Culture;
 use App\Entity\Recolte;
 use App\Repository\CultureRepository;
+use App\Repository\RecolteRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use \DateTime;
 
 /**
  * Class RecolteType
@@ -16,6 +21,19 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class RecolteType extends AbstractType
 {
+    /** @var RecolteRepository */
+    private $repositoryRecolte;
+
+    /**
+     * RecolteType constructor.
+     *
+     * @param RecolteRepository $repositoryRecolte
+     */
+    public function __construct(RecolteRepository $repositoryRecolte)
+    {
+        $this->repositoryRecolte = $repositoryRecolte;
+    }
+
     /**
      * @param FormBuilderInterface $builder
      * @param array $options
@@ -23,7 +41,7 @@ class RecolteType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('date', null, ['widget' => 'single_text'])
+            ->add('date', DateType::class, ['widget' => 'single_text'])
             ->add('culture', EntityType::class, [
                 'class' => Culture::class,
                 'choice_label' => 'libelle',
@@ -35,6 +53,19 @@ class RecolteType extends AbstractType
             ->add('poids')
             ->add('prixPaye')
             ->add('commentaire')
+            ->addEventListener(
+                FormEvents::PRE_SET_DATA,
+                function (FormEvent $event)  {
+                    $data = $event->getData();
+                    $dateLastId = $this->repositoryRecolte->findDateLastId();
+                    $date = new DateTime($dateLastId);
+                    if (empty($date)) {
+                        $date = new DateTime();
+                    }
+                    $data->setDate($date);
+
+                }
+            )
         ;
     }
 

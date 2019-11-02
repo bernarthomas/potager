@@ -5,18 +5,26 @@ namespace App\Controller;
 use App\Entity\Utilisateur;
 use App\Form\RegistrationFormType;
 use App\Security\PotagerAuthenticator;
+use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Guard\GuardAuthenticatorHandler;
-use \DateTime;
+use \Exception;
 
 class RegistrationController extends AbstractController
 {
     /**
      * @Route("/enregistrer", name="app_register")
+     *
+     * @param Request $request
+     * @param UserPasswordEncoderInterface $passwordEncoder
+     * @param GuardAuthenticatorHandler $guardHandler
+     * @param PotagerAuthenticator $authenticator
+     *
+     * @return Response
      */
     public function register(Request $request, UserPasswordEncoderInterface $passwordEncoder, GuardAuthenticatorHandler $guardHandler, PotagerAuthenticator $authenticator): Response
     {
@@ -33,6 +41,7 @@ class RegistrationController extends AbstractController
                     $form->get('plainPassword')->getData()
                 )
             );
+            /** @var ObjectManager $entityManager */
             $entityManager = $this->getDoctrine()->getManager();
             $utilisateurPotager = $entityManager->getReference(Utilisateur::class, 1);
             $user
