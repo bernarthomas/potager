@@ -2,10 +2,10 @@
 <p>Aucun résultat</p>
 {% else %}
 <table>
-    <thead><tr><th>id</th><th>date</th><th>culture</th><th>poids (KG)</th><th>prix payé (€)</th><th>commentaire</th></tr></thead>
+    <thead><tr><th>id</th><th>date</th><th>culture</th><th>poids (KG)</th><th>commentaire</th></tr></thead>
     <tbody>
     {% for valeur in liste %}
-    <tr><td>{{valeur.id}}</td><td>{{valeur.date | date('d/m/Y')}}</td><td>{{ valeur.culture.libelle }}</td><td>{{valeur.poids}}</td><td>{{valeur.prixPaye}}</td><td>{{valeur.commentaire}}</td></tr>
+    <tr><td>{{valeur.id}}</td><td>{{valeur.date | date('d/m/Y')}}</td><td>{{ valeur.culture.libelle }}</td><td>{{valeur.poids}}</td><td>{{valeur.commentaire}}</td></tr>
     {% endfor %}
     </tbody>
 </table>

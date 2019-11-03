@@ -51,7 +51,6 @@ class RecolteType extends AbstractType
                 'placeholder' => ''
             ])
             ->add('poids')
-            ->add('prixPaye')
             ->add('commentaire')
             ->addEventListener(
                 FormEvents::PRE_SET_DATA,
@@ -63,7 +62,10 @@ class RecolteType extends AbstractType
                         $date = new DateTime();
                     }
                     $data->setDate($date);
-
+                    $derniereCulture = $this->repositoryRecolte->findCultureLast();
+                    if (!empty($derniereCulture)) {
+                        $data->setCulture($derniereCulture);
+                    }
                 }
             )
         ;

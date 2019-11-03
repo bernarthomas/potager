@@ -112,7 +112,7 @@ class RecolteAdmin extends ServiceParent
      */
     public function liste()
     {
-        return $this->repositoryRecolte->findBy([], ['date' => 'ASC']);
+        return $this->repositoryRecolte->findBy([], ['id' => 'DESC']);
     }
 
     /**

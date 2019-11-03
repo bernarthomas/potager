@@ -43,11 +43,6 @@ class Recolte implements Historisable
     private $poids;
 
     /**
-     * @ORM\Column(type="float")
-     */
-    private $prixPaye;
-
-    /**
      * @return array
      */
     public function toArray() : array
@@ -155,26 +150,6 @@ class Recolte implements Historisable
     public function setPoids(float $poids): self
     {
         $this->poids = $poids;
-
-        return $this;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getPrixPaye()
-    {
-        return $this->prixPaye;
-    }
-
-    /**
-     * @param mixed $prixPaye
-     *
-     * @return Recolte
-     */
-    public function setPrixPaye($prixPaye)
-    {
-        $this->prixPaye = $prixPaye;
 
         return $this;
     }

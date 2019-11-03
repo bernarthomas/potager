@@ -2,10 +2,12 @@
 
 namespace App\Repository;
 
+use App\Entity\Culture;
 use App\Entity\Recolte;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\DBAL\DBALException;
+use Doctrine\ORM\Query\ResultSetMappingBuilder;
 
 /**
  * Class RecolteRepository
@@ -44,5 +46,19 @@ class RecolteRepository extends ServiceEntityRepository
         }
 
         return $retour;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function findCultureLast()
+    {
+        $entityManager = $this->getEntityManager();
+        $sql = 'SELECT c.* FROM recolte r JOIN culture c ON c.id = r.culture_id WHERE r.id = (SELECT MAX(id) FROM recolte)';
+        $resultSetMapping = new ResultSetMappingBuilder($entityManager);
+        $resultSetMapping->addRootEntityFromClassMetadata(Culture::class, 'c');
+        $query = $entityManager->createNativeQuery($sql, $resultSetMapping);
+
+        return  $query->getOneOrNullResult();
     }
 }
