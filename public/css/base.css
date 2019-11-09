@@ -9,3 +9,5 @@ a {color: #101010; text-decoration: none;}
 h1 {line-height: 2rem;}
 table thead { display:block; }
 table tbody { height:8rem; overflow-y:scroll; display:block; }
+tr:nth-child(odd) {background-color: rgba(3, 169, 69, 0.22);}
+.ta_right {padding: 0.3rem 0.5rem 0.3rem 1rem; text-align: right;}

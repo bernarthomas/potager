@@ -2,6 +2,8 @@
 namespace App\Service;
 
 use App\Entity\Recolte;
+use App\Entity\Recolte2018;
+use App\Entity\Recolte2019;
 use App\Repository\ActionRepository;
 use App\Repository\EntiteRepository;
 use App\Repository\HistoriqueRepository;
@@ -86,14 +88,31 @@ class RecolteAdmin extends ServiceParent
      */
     public function decore()
     {
-        $retour = [];
+        $retour = ['total' => ['total' => 0]];
         $titres = [null];
+        $total = [null];
+        /** @var Recolte2019|Recolte2018 $recolte */
         foreach($this->recoltes as $recolte) {
             $mois = $recolte->getMois();
             $culture = $recolte->getCulture();
-            $titres[$mois] = $mois;
-            $retour[$culture][$mois] = $recolte->getPoids();
+            $poids = $recolte->getPoids();
+            $moisEntier = (int) ltrim($mois,'0');
+            $titres[$moisEntier] = $mois;
+            $retour[$culture][$moisEntier] = number_format($poids, 3, ',', ' ');
+            if (!isset($retour[$culture]['total'])) {
+                $retour[$culture]['total'] = 0;
+            }
+            $retour[$culture]['total'] += $poids;
+            $retour['total']['total'] += $poids;
+            if (!isset($retour['total'][$moisEntier])) {
+                $retour['total'][$moisEntier] = 0;
+            }
+            $retour['total'][$moisEntier] += $poids;
         }
+        foreach($retour as $cle => $tableau) {
+            $retour[$cle]['total'] = number_format($tableau['total'], 3, ',', ' ');
+        }
+        sort($titres);
         $retour[0] = $titres;
 
         return $retour;

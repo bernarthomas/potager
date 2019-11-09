@@ -1,10 +1,10 @@
 {% extends 'head_extends_base.html.twig' %}
 
 {% block title %}Accueil - {{ parent() }}{% endblock %}
-
+{% block header %}{{ parent() }} <p>potager familial créé en 2017 avec 30m² cultivés dans l'ouest de Toulouse</p>{% endblock %}
 {% block contenu %}
-    <div class="encart">{% include 'principal/presentation.html.twig' %}</div>
     <div class="encart recolte2019">{% include 'principal/recoltes2019.html.twig' %}</div>
+    <div class="encart recolte2018">{% include 'principal/recoltes2018.html.twig' %}</div>
 {% endblock %}
 
 {% block stylesheets %}

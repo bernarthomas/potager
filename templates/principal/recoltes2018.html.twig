@@ -1,10 +1,10 @@
-<h2>Poids des récoltes 2019 (kg)</h2>
+<h2>Poids des récoltes 2018 (kg)</h2>
 <table>
-        <tr><th>total</th>{% for titre in recoltes2019[0] %}<th>{{ titre }}</th>{% endfor %}</tr>
-    {% for cle, recolte in recoltes2019 %}
+        <tr><th>total</th>{% for titre in recoltes2018[0] %}<th>{{ titre }}</th>{% endfor %}</tr>
+    {% for cle, recolte in recoltes2018 %}
         {% if cle is not same as(0) %}
         <tr>
-        {% for titre in recoltes2019[0] %}
+        {% for titre in recoltes2018[0] %}
             {% if titre == null %}<td class="ta_right">{{ attribute(recolte, 'total') }}</td><th class="ta_right">{{ cle }}</th>{% else %}<td class="ta_right">{% if attribute(recolte, titre|trim('0', 'left')) is defined %}{{ attribute(recolte, titre|trim('0', 'left')) }} {% endif %}{% endif %}</td>
         {% endfor %}
         </tr>
